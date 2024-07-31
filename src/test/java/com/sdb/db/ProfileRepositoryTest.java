@@ -1,6 +1,5 @@
 package com.sdb.db;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
@@ -10,11 +9,37 @@ import java.time.Month;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 @DataJdbcTest
 public class ProfileRepositoryTest {
 
     @Autowired
     private ProfileRepository profileRepository;
+
+    @Test
+    void checkIfAddressCanBeAddedAfterProfileInsertion() {
+        // given
+        Student student = new Student("White", LocalDate.now(), 200, 100);
+        Profile profile = new Profile("John", "Doe", "Johnny", LocalDate.of(1980, Month.JANUARY, 1), 'M', student, null);
+        Long id = profileRepository.save(profile).getId();
+
+        // when
+        Optional<Profile> optional = profileRepository.findById(id);
+        assertTrue(optional.isPresent());
+        Profile savedProfile = optional.get();
+        Address address = new Address(null, "123 Main St.", null, "New York", "New York", "1234");
+        savedProfile.setAddress(address);
+        profileRepository.save(savedProfile);
+
+        // then
+        optional = profileRepository.findById(id);
+        assertTrue(optional.isPresent());
+        savedProfile = optional.get();
+        profile.setAddress(address);
+
+        assertEquals(profile, savedProfile);
+    }
 
     @Test
     void checkDataInsertMultipleProfiles() {
@@ -25,89 +50,75 @@ public class ProfileRepositoryTest {
 
         Address address2 = new Address(null, "92 Bel-Air", null, "Los Angeles", "CA", "4321");
         Student student2 = new Student("Green", LocalDate.now(), 37, 420);
-        Profile profile2 = new Profile("Jane", "Doe", "xylophone", LocalDate.MIN, 'F', student2, address2);
+        Profile profile2 = new Profile("Jane", "Doe", "xylophone", LocalDate.now(), 'F', student2, address2);
 
         // when
-        profileRepository.save(profile1);
-        profileRepository.save(profile2);
+        Long id1 = profileRepository.save(profile1).getId();
+        Long id2 = profileRepository.save(profile2).getId();
 
-        Integer totalAddresses = profileRepository.countAddresses();
+        Optional<Profile> optional1 = profileRepository.findById(id1);
+        Optional<Profile> optional2 = profileRepository.findById(id2);
+
+        assertTrue(optional1.isPresent());
+        assertTrue(optional2.isPresent());
+
+        Profile savedProfile1 = optional1.get();
+        Profile savedProfile2 = optional2.get();
 
         // then
-        Assertions.assertEquals(2, totalAddresses);
-
+        assertAll(
+                () -> assertEquals(profile1, savedProfile1),
+                () -> assertEquals(profile2, savedProfile2)
+        );
     }
 
     @Test
-    void checkDataInsertionAddress() {
+    void checkOneProfileInsertionWithAddress() {
         // given
         Address address = new Address(null, "123 Main St.", null, "New York", "New York", "1234");
-        Student student = new Student("White", LocalDate.MIN, 200, 100);
-        Profile profile = new Profile("John", "Doe", "Johnny", LocalDate.MAX, 'M', student, address);
+        Student student = new Student("White", LocalDate.now(), 200, 100);
+        Profile profile = new Profile("John", "Doe", "Johnny", LocalDate.of(1980, Month.JANUARY, 1), 'M', student, address);
 
         // when
         Long id = profileRepository.save(profile).getId();
-        Integer addressCount = profileRepository.countAddresses();
-
-        // then
-        Assertions.assertEquals(1, addressCount);
-
         Optional<Profile> savedOptionalProfile = profileRepository.findById(id);
 
-        if (savedOptionalProfile.isEmpty()) Assertions.fail();
-
+        if (savedOptionalProfile.isEmpty()) fail();
         Profile savedProfile = savedOptionalProfile.get();
         Address savedAddress = savedProfile.getAddress();
 
-        Assertions.assertEquals(address.getAddressLine1(), savedAddress.getAddressLine1());
-    }
-
-    @Test
-    void checkRowCountOfAddressTable() {
-        // given
-        Student student = new Student("White", LocalDate.MIN, 200, 100);
-        Profile profile = new Profile("John", "Doe", "Johnny", LocalDate.MAX, 'M', student, null);
-
-        // when
-        profileRepository.save(profile);
-
         // then
-        Integer addressCount = profileRepository.countAddresses();
-        Assertions.assertEquals(0, addressCount);
+        assertEquals(address, savedAddress);
     }
 
     @Test
-    void checkIfEmptyAddressTableReturnsRow() {
+    void checkIfEmptyAddressTableReturnsEmptyList() {
         // given
-        Student student = new Student("White", LocalDate.MIN, 200, 100);
+        Student student = new Student("White", LocalDate.now(), 200, 100);
         Profile profile = new Profile("John", "Doe", "Johnny", LocalDate.MAX, 'M', student, null);
 
         // when
         Long id = profileRepository.save(profile).getId();
-
-        // then
         List<Address> addresses = profileRepository.findByID(id);
 
-        if (addresses.size() != 0) Assertions.fail();
+        // then
+        assertTrue(addresses.isEmpty());
     }
 
+    // This test accounts for both Profile and Student data.
     @Test
     void checkInsertionOfBothProfileStudent() {
         // given
-        Student student = new Student("White", LocalDate.MIN, 200, 100);
-        Profile profile = new Profile("John", "Doe", "Johnny", LocalDate.MAX, 'M', student, null);
+        Student student = new Student("White", LocalDate.now(), 200, 100);
+        Profile profile = new Profile("John", "Doe", "Johnny", LocalDate.of(1980, Month.JANUARY, 1), 'M', student, null);
 
         // when
         Long id = profileRepository.save(profile).getId();
+        Optional<Profile> optional = profileRepository.findById(id);
 
         // then
-        Optional<Profile> savedOptionalProfile = profileRepository.findById(id);
-
-        if (savedOptionalProfile.isEmpty()) Assertions.fail();
-
-        Profile savedProfile = savedOptionalProfile.get();
-        Student savedStudent = savedProfile.getStudent();
-
-        Assertions.assertEquals(student.getRank(), savedStudent.getRank());
+        assertTrue(optional.isPresent());
+        Profile savedProfile = optional.get();
+        assertEquals(profile, savedProfile);
     }
 }

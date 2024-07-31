@@ -10,9 +10,6 @@ import java.util.List;
 @Repository
 public interface ProfileRepository extends CrudRepository<Profile, Long> {
 
-    @Query("SELECT * FROM \"Address\" WHERE \"addressId\"= :poopsa")
-    List<Address> findByID(@Param("poopsa") Long id);
-
-    @Query("SELECT COUNT(*) FROM \"Address\"")
-    Integer countAddresses();
+    @Query("SELECT * FROM \"Address\" WHERE \"addressId\"= :id")
+    List<Address> findByID(@Param("id") Long id);
 }
