@@ -21,6 +21,13 @@ CREATE TABLE "Address" (
     "zipcode" VARCHAR(30)
 );
 
+--CREATE TABLE "Promotions" (
+--    "promotionId" INTEGER AUTO_INCREMENT PRIMARY KEY,
+--    "oldRank" VARCHAR(50) NOT NULL,
+--    "newRank" VARCHAR(50), NOT NULL,
+--    "date" DATE NOT NULL
+--);
+
 CREATE TABLE "Student" (
     "studentId" INTEGER AUTO_INCREMENT PRIMARY KEY,
     "rank" VARCHAR(30) NOT NULL,

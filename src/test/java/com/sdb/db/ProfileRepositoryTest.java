@@ -20,7 +20,7 @@ public class ProfileRepositoryTest {
     @Test
     void checkIfAddressCanBeAddedAfterProfileInsertion() {
         // given
-        Student student = new Student("White", LocalDate.now(), 200, 100);
+        Student student = new Student(null, "White", LocalDate.now(), 200, 100);
         Profile profile = new Profile("John", "Doe", "Johnny", LocalDate.of(1980, Month.JANUARY, 1), 'M', student, null);
         Long id = profileRepository.save(profile).getId();
 
@@ -45,11 +45,12 @@ public class ProfileRepositoryTest {
     void checkDataInsertMultipleProfiles() {
         // given
         Address address1 = new Address(null, "123 Main St.", null, "New York", "NY", "1234");
-        Student student1 = new Student("Yellow", LocalDate.of(1980, Month.DECEMBER, 25), 150, 150);
+        Student student1 = new Student(null, "Yellow", LocalDate.of(1980, Month.DECEMBER, 25), 200, 100);
         Profile profile1 = new Profile("John", "Doe", "Lil jon jon", LocalDate.now(), 'M', student1, address1);
 
         Address address2 = new Address(null, "92 Bel-Air", null, "Los Angeles", "CA", "4321");
-        Student student2 = new Student("Green", LocalDate.now(), 37, 420);
+        Student student2 = new Student(null, "Green", LocalDate.now(), 37, 420);
+
         Profile profile2 = new Profile("Jane", "Doe", "xylophone", LocalDate.now(), 'F', student2, address2);
 
         // when
@@ -76,7 +77,7 @@ public class ProfileRepositoryTest {
     void checkOneProfileInsertionWithAddress() {
         // given
         Address address = new Address(null, "123 Main St.", null, "New York", "New York", "1234");
-        Student student = new Student("White", LocalDate.now(), 200, 100);
+        Student student = new Student(null, "White", LocalDate.now(), 200, 100);
         Profile profile = new Profile("John", "Doe", "Johnny", LocalDate.of(1980, Month.JANUARY, 1), 'M', student, address);
 
         // when
@@ -94,7 +95,7 @@ public class ProfileRepositoryTest {
     @Test
     void checkIfEmptyAddressTableReturnsEmptyList() {
         // given
-        Student student = new Student("White", LocalDate.now(), 200, 100);
+        Student student = new Student(null, "White", LocalDate.now(), 200, 100);
         Profile profile = new Profile("John", "Doe", "Johnny", LocalDate.MAX, 'M', student, null);
 
         // when
@@ -109,7 +110,7 @@ public class ProfileRepositoryTest {
     @Test
     void checkInsertionOfBothProfileStudent() {
         // given
-        Student student = new Student("White", LocalDate.now(), 200, 100);
+        Student student = new Student(null, "White", LocalDate.now(), 200, 100);
         Profile profile = new Profile("John", "Doe", "Johnny", LocalDate.of(1980, Month.JANUARY, 1), 'M', student, null);
 
         // when
