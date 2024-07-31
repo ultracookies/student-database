@@ -60,3 +60,5 @@ build/
 ### VS Code ###
 .vscode/
 >>>>>>> 9b57969 (initial commit)
+
+/compose.yaml
