@@ -13,7 +13,7 @@ public class Student {
 
     @Column("studentId")
     @Id
-    Long id;
+    private Long id;
 
     @Column("rank")
     private String rank;

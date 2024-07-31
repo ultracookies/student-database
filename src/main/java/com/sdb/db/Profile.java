@@ -38,12 +38,18 @@ public class Profile {
     @Column("studentId")
     private Student student;
 
-    public Profile(String firstName, String lastName, String preferredName, LocalDate dateOfBirth, Character sex, Student student) {
+    @Column("addressId")
+    private Address address;
+
+    public Profile(String firstName, String lastName,
+                   String preferredName, LocalDate dateOfBirth,
+                   Character sex, Student student, Address address) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.preferredName = preferredName;
         this.dateOfBirth = dateOfBirth;
         this.sex = sex;
         this.student = student;
+        this.address = address;
     }
 }

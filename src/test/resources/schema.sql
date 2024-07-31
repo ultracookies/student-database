@@ -12,6 +12,15 @@ CREATE TABLE "Profile" (
     "phoneNumber" VARCHAR(50)
 );
 
+CREATE TABLE "Address" (
+    "addressId" INTEGER AUTO_INCREMENT PRIMARY KEY,
+    "addressLine1" VARCHAR(50),
+    "addressLine2" VARCHAR(50),
+    "city" VARCHAR(50),
+    "state" VARCHAR(30),
+    "zipcode" VARCHAR(30)
+);
+
 CREATE TABLE "Student" (
     "studentId" INTEGER AUTO_INCREMENT PRIMARY KEY,
     "rank" VARCHAR(30) NOT NULL,
