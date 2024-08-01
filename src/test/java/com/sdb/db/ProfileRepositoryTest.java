@@ -18,6 +18,29 @@ public class ProfileRepositoryTest {
     private ProfileRepository profileRepository;
 
     @Test
+    void checkIfPromotionIsInsertedAssociatedWithStudent() {
+        // given
+        Student student = new Student("White", LocalDate.now());
+
+        Profile profile = new Profile("John", "Doe", LocalDate.of(1980, Month.JANUARY, 1), 'M', student);
+        Long id = profileRepository.save(profile).getId();
+
+        Optional<Profile> optional = profileRepository.findById(id);
+        assertTrue(optional.isPresent());
+
+        Profile savedProfile = optional.get();
+        Student savedStudent = savedProfile.getStudent();
+
+        // when
+        Promotion promotion = new Promotion(student.getRank(), "Yellow", LocalDate.now(), savedStudent.getId());
+        savedStudent.addPromotion(promotion);
+        student.addPromotion(promotion);
+
+        // then
+        assertEquals(student, savedStudent);
+    }
+
+    @Test
     void checkIfAddressCanBeAddedAfterProfileInsertion() {
         // given
         Student student = new Student("White", LocalDate.now());
