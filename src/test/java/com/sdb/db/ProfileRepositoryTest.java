@@ -20,15 +20,15 @@ public class ProfileRepositoryTest {
     @Test
     void checkIfAddressCanBeAddedAfterProfileInsertion() {
         // given
-        Student student = new Student(null, "White", LocalDate.now(), 200, 100);
-        Profile profile = new Profile("John", "Doe", "Johnny", LocalDate.of(1980, Month.JANUARY, 1), 'M', student, null);
+        Student student = new Student("White", LocalDate.now());
+        Profile profile = new Profile("John", "Doe", LocalDate.of(1980, Month.JANUARY, 1), 'M', student);
         Long id = profileRepository.save(profile).getId();
 
         // when
         Optional<Profile> optional = profileRepository.findById(id);
         assertTrue(optional.isPresent());
         Profile savedProfile = optional.get();
-        Address address = new Address(null, "123 Main St.", null, "New York", "New York", "1234");
+        Address address = new Address("123 Main St.", "New York", "New York", "1234");
         savedProfile.setAddress(address);
         profileRepository.save(savedProfile);
 
@@ -42,16 +42,20 @@ public class ProfileRepositoryTest {
     }
 
     @Test
-    void checkDataInsertMultipleProfiles() {
+    void checkDataInsertMultipleProfilesAndExtraneousData() {
         // given
-        Address address1 = new Address(null, "123 Main St.", null, "New York", "NY", "1234");
-        Student student1 = new Student(null, "Yellow", LocalDate.of(1980, Month.DECEMBER, 25), 200, 100);
-        Profile profile1 = new Profile("John", "Doe", "Lil jon jon", LocalDate.now(), 'M', student1, address1);
+        Student student1 = new Student("Yellow", LocalDate.of(1980, Month.DECEMBER, 25));
+        Profile profile1 = new Profile("John", "Doe", LocalDate.now(), 'M', student1);
+        Address address1 = new Address("123 Main St.", "New York", "NY", "1234");
+        profile1.setAddress(address1);
+        profile1.getStudent().setWeight(200);
+        profile1.getStudent().setHeight(100);
 
-        Address address2 = new Address(null, "92 Bel-Air", null, "Los Angeles", "CA", "4321");
-        Student student2 = new Student(null, "Green", LocalDate.now(), 37, 420);
-
-        Profile profile2 = new Profile("Jane", "Doe", "xylophone", LocalDate.now(), 'F', student2, address2);
+        Student student2 = new Student("Green", LocalDate.now());
+        Profile profile2 = new Profile("Jane", "Doe", LocalDate.now(), 'F', student2);
+        Address address2 = new Address("92 Bel-Air", "Los Angeles", "CA", "4321");
+        address2.setAddressLine2("idk what goes in these fields tbh");
+        profile2.setAddress(address2);
 
         // when
         Long id1 = profileRepository.save(profile1).getId();
@@ -76,10 +80,10 @@ public class ProfileRepositoryTest {
     @Test
     void checkOneProfileInsertionWithAddress() {
         // given
-        Address address = new Address(null, "123 Main St.", null, "New York", "New York", "1234");
-        Student student = new Student(null, "White", LocalDate.now(), 200, 100);
-        Profile profile = new Profile("John", "Doe", "Johnny", LocalDate.of(1980, Month.JANUARY, 1), 'M', student, address);
-
+        Address address = new Address("123 Main St.", "New York", "New York", "1234");
+        Student student = new Student("White", LocalDate.now());
+        Profile profile = new Profile("John", "Doe", LocalDate.of(1980, Month.JANUARY, 1), 'M', student);
+        profile.setAddress(address);
         // when
         Long id = profileRepository.save(profile).getId();
         Optional<Profile> savedOptionalProfile = profileRepository.findById(id);
@@ -95,8 +99,8 @@ public class ProfileRepositoryTest {
     @Test
     void checkIfEmptyAddressTableReturnsEmptyList() {
         // given
-        Student student = new Student(null, "White", LocalDate.now(), 200, 100);
-        Profile profile = new Profile("John", "Doe", "Johnny", LocalDate.MAX, 'M', student, null);
+        Student student = new Student("White", LocalDate.now());
+        Profile profile = new Profile("John", "Doe", LocalDate.MAX, 'M', student);
 
         // when
         Long id = profileRepository.save(profile).getId();
@@ -110,8 +114,8 @@ public class ProfileRepositoryTest {
     @Test
     void checkInsertionOfBothProfileStudent() {
         // given
-        Student student = new Student(null, "White", LocalDate.now(), 200, 100);
-        Profile profile = new Profile("John", "Doe", "Johnny", LocalDate.of(1980, Month.JANUARY, 1), 'M', student, null);
+        Student student = new Student("White", LocalDate.now());
+        Profile profile = new Profile("John", "Doe", LocalDate.of(1980, Month.JANUARY, 1), 'M', student);
 
         // when
         Long id = profileRepository.save(profile).getId();

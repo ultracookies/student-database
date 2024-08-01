@@ -1,7 +1,7 @@
 package com.sdb.db;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NonNull;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
@@ -10,7 +10,6 @@ import java.time.LocalDate;
 
 @Table("Student")
 @Data
-@AllArgsConstructor
 public class Student {
 
     @Column("studentId")
@@ -18,9 +17,11 @@ public class Student {
     private Long id;
 
     @Column("rank")
+    @NonNull
     private String rank;
 
     @Column("dateBegan")
+    @NonNull
     private LocalDate dateBegan;
 
     @Column("weight")
