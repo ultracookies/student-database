@@ -35,6 +35,7 @@ public class Profile {
 
     @Column("dateOfBirth")
     @NonNull
+    @Setter(AccessLevel.NONE)
     private LocalDate dateOfBirth;
 
     @Column("sex")
@@ -46,6 +47,7 @@ public class Profile {
 
     @Column("studentId")
     @NonNull
+    @Setter(AccessLevel.NONE)
     private Student student;
 
     @Column("addressId")
