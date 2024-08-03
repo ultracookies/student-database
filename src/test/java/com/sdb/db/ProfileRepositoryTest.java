@@ -19,6 +19,75 @@ public class ProfileRepositoryTest {
     private ProfileRepository profileRepository;
 
     @Test
+    void checkIfMultiplePaymentsAreAdded() {
+        // given
+        Student student1 = new Student("Green", LocalDate.of(2022, Month.SEPTEMBER, 16));
+        Profile profile1 = new Profile("John", "Doe",
+                LocalDate.of(2000, Month.FEBRUARY, 27), 'M', student1);
+
+        Payment payment1 = new Payment(320f, LocalDate.now());
+        Payment payment2 = new Payment(420f, LocalDate.now());
+        profile1.addPayment(payment1);
+
+        // when
+        Long id1 = profileRepository.save(profile1).getId();
+
+        Optional<Profile> optional1 = profileRepository.findById(id1);
+
+        assertTrue(optional1.isPresent());
+
+        Profile savedProfile1 = optional1.get();
+        savedProfile1.addPayment(payment2);
+        profileRepository.save(savedProfile1);
+
+        optional1 = profileRepository.findById(id1);
+        assertTrue(optional1.isPresent());
+
+        savedProfile1 = optional1.get();
+
+        var iterator = savedProfile1.paymentIterator();
+
+        Payment savedPayment1 = iterator.next();
+        assertAll(
+                () -> assertEquals(payment1.getAmount(), savedPayment1.getAmount()),
+                () -> assertEquals(payment1.getDate(), savedPayment1.getDate()),
+                () -> assertEquals(0, savedPayment1.getIndex())
+        );
+
+        var savedPayment2 = iterator.next();
+        assertAll(
+                () -> assertEquals(payment2.getAmount(), savedPayment2.getAmount()),
+                () -> assertEquals(payment2.getDate(), savedPayment2.getDate()),
+                () -> assertEquals(1, savedPayment2.getIndex())
+        );
+    }
+
+    @Test
+    void checkIfPaymentIsAdded() {
+        // given
+        Student student = new Student("Green", LocalDate.of(2002, Month.SEPTEMBER, 16));
+        Profile profile = new Profile("John", "Doe",
+                LocalDate.of(2000, Month.FEBRUARY, 27), 'M', student);
+
+        Payment payment = new Payment(120f, LocalDate.now());
+        profile.addPayment(payment);
+        Long id = profileRepository.save(profile).getId();
+
+        // when
+        Optional<Profile> optional = profileRepository.findById(id);
+
+        // then
+        assertTrue(optional.isPresent());
+        Payment savedPayment = optional.get().paymentIterator().next();
+
+        assertAll(
+                () -> assertEquals(payment.getAmount(), savedPayment.getAmount()),
+                () -> assertEquals(payment.getDate(), savedPayment.getDate()),
+                () -> assertEquals(0, savedPayment.getIndex())
+        );
+    }
+
+    @Test
     void checkIfPromotionOrderIsMaintained() {
         Promotion promotion1 = new Promotion("White", "Yellow", LocalDate.now());
         Promotion promotion2 = new Promotion("Yellow", "Green",

@@ -35,6 +35,15 @@ CREATE TABLE "Profile" (
     FOREIGN KEY ("addressId") REFERENCES "Address" ("addressId")
 );
 
+CREATE TABLE "Payments" (
+    "paymentId" INTEGER AUTO_INCREMENT PRIMARY KEY,
+    "index" INT NOT NULL,
+    "amount" DECIMAL(19, 4) NOT NULL,
+    "date" DATE NOT NULL,
+    "PROFILE_KEY" INTEGER NOT NULL,
+    FOREIGN KEY ("PROFILE_KEY") REFERENCES "Profile" ("profileId")
+);
+
 CREATE TABLE "Promotions" (
     "promotionId" INTEGER AUTO_INCREMENT PRIMARY KEY,
     "index" INT NOT NULL,

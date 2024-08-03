@@ -1,14 +1,15 @@
 package com.sdb.db;
 
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.NonNull;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDate;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
 
 @Table("Profile")
 @Data
@@ -52,4 +53,17 @@ public class Profile {
 
     @Column("addressId")
     private Address address;
+
+    @MappedCollection(idColumn = "PROFILE_KEY", keyColumn = "index")
+    @Setter(AccessLevel.NONE)
+    @Getter(AccessLevel.NONE)
+    private List<Payment> payments = new LinkedList<>();
+
+    public ListIterator<Payment> paymentIterator() {
+        return this.payments.listIterator();
+    }
+
+    public void addPayment(Payment payment) {
+        this.payments.add(payment);
+    }
 }
