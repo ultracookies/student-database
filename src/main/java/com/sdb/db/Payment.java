@@ -14,9 +14,6 @@ import java.time.LocalDate;
 @Data
 @Setter(AccessLevel.NONE)
 public class Payment {
-    @Column("paymentId")
-    @Id
-    private Long id;
 
     @Column("index")
     private Integer index;
@@ -28,7 +25,4 @@ public class Payment {
     @Column("date")
     @NonNull
     private final LocalDate date;
-
-    @Column("PROFILE_KEY")
-    private Long profileId;
 }
